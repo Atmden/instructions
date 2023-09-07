@@ -44,7 +44,7 @@ systemctl restart sshd
 ### Установка Nginx 1.18
 
 ```
-sudo apt install -y nginx
+sudo apt install -y nginx certbot unzip mc
 ```
 
 ### Установка MySql 8
@@ -65,103 +65,73 @@ sudo mysql -u root -p
 ```
 sudo add-apt-repository ppa:ondrej/php && \
 sudo apt update && \ 
-sudo apt install -y php8.2-fpm php8.2-common php8.2-pgsql php8.2-gmp \
-php8.2-curl php8.2-redis php8.2-intl php8.2-mbstring php8.2-xmlrpc php8.2-gd php8.2-xml php8.2-cli php8.2-zip
+sudo apt install -y  php8.2-fpm php8.2-cgi php8.2-common php8.2-pgsql php8.2-gmp \
+php8.2-curl php8.2-redis php8.2-intl php8.2-mbstring php8.2-xmlrpc php8.2-gd php8.2-xml php8.2-cli php8.2-zip php8.2-mysqli php8.2-bz2
 ```
+ 
 
 #### Для удобства работы рекомендую настроить nginx и php на работу от созданного пользователя
 
 ### Настройка Nginx
 
-rm /etc/nginx/sites-enabled/default
-rm /etc/nginx/sites-available/default
-nano /etc/nginx/sites-available/site.com
-
-nano /etc/nginx/nginx.conf
-```nginx configuration
-user hoster;
-worker_processes auto;
-pid /run/nginx.pid;
-include /etc/nginx/modules-enabled/*.conf;
-
-events {
-        worker_connections 2068;
-        multi_accept on;
-}
-
-http {
-
-        ##
-        # Basic Settings
-        ##
-
-        sendfile on;
-        tcp_nopush on;
-        types_hash_max_size 2048;
-        # server_tokens off;
-
-        # server_names_hash_bucket_size 64;
-        # server_name_in_redirect off;
-
-        include /etc/nginx/mime.types;
-        default_type application/octet-stream;
-
-        ##
-        # SSL Settings
-        ##
-
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
-        ssl_prefer_server_ciphers on;
-
-        ##
-        # Logging Settings
-        ##
-
-        access_log /var/log/nginx/access.log;
-        error_log /var/log/nginx/error.log;
-
-        ##
-        # Gzip Settings
-        ##
-
-        gzip on;
-
-        # gzip_vary on;
-        # gzip_proxied any;
-        # gzip_comp_level 6;
-        # gzip_buffers 16 8k;
-        # gzip_http_version 1.1;
-        # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
-
-        ##
-        # Virtual Host Configs
-        ##
-
-        include /etc/nginx/conf.d/*.conf;
-        include /etc/nginx/sites-enabled/*;
-}
+Идем на сайт https://www.digitalocean.com/community/tools/nginx и проходим все шаги
 
 
-#mail {
-#       # See sample authentication script at:
-#       # http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
-#
-#       # auth_http localhost/auth.php;
-#       # pop3_capabilities "TOP" "USER";
-#       # imap_capabilities "IMAP4rev1" "UIDPLUS";
-#
-#       server {
-#               listen     localhost:110;
-#               protocol   pop3;
-#               proxy      on;
-#       }
-#
-#       server {
-#               listen     localhost:143;
-#               protocol   imap;
-#               proxy      on;
-#       }
-#}
-root@tinki:/home/hoster#
+### Настройка PHP
+
+nano /etc/php/8.2/fpm/pool.d/www.conf
 
 ```
+user = hoster
+group = hoster
+
+
+listen.owner = hoster
+listen.group = hoster
+
+```
+
+nano /etc/php/8.2/fpm/php.ini
+
+```
+memory_limit = 256M
+
+post_max_size = 256M
+upload_max_filesize = 256M
+```
+systemctl restart php8.2-fpm
+
+sudo chown -R hoster:hoster /home/hoster/www
+
+
+cd ~
+curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+
+nano .env
+
+
+
+wget https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip
+unzip phpMyAdmin-5.2.1-all-languages.zip
+sudo mv phpMyAdmin-5.2.1-all-languages /usr/share/phpmyadmin
+rm phpMyAdmin-5.2.1-all-languages.zip
+
+
+Настройка Mysql
+
+mysql -u root -p
+
+UNINSTALL COMPONENT "file://component_validate_password";
+
+CREATE USER 'hoster'@'localhost' IDENTIFIED BY 'Pa$$w0rd';
+
+GRANT ALL ON *.* TO 'hoster'@'localhost';
+
+FLUSH PRIVILEGES;
+
+
+
+cp config.sample.inc.php config.inc.php
+https://www.motorsportdiesel.com/tools/blowfish-salt/pma/
