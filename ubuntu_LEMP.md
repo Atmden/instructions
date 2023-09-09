@@ -155,6 +155,7 @@ sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=compose
 
 phpMyAdmin устанавливаем когда уже развернули сайт, т.к. размещать его будем в директории сайта
 
+```
 wget https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip
 unzip phpMyAdmin-5.2.1-all-languages.zip
 sudo mv phpMyAdmin-5.2.1-all-languages /home/новый_юзер/www/папка_с_сайтом/public/phpmyadmin
@@ -163,7 +164,7 @@ cd /home/новый_юзер/www/папка_с_сайтом/public/phpmyadmin
 cp config.sample.inc.php config.inc.php
 https://www.motorsportdiesel.com/tools/blowfish-salt/pma/
 
-
+```
 
 ### Fish shell
 
