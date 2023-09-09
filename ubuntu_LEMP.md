@@ -60,6 +60,34 @@ sudo mysql_secure_installation
 sudo mysql -u root -p
 ```
 
+### Установка PostgreSQL
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+apt update
+apt install postgresql postgresql-client -y
+
+sudo -u postgres psql
+
+postgres=# CREATE USER [Username] WITH ENCRYPTED PASSWORD '[Password]';
+CREATE DATABASE [DatabaseName];
+GRANT ALL PRIVILEGES ON DATABASE [DatabaseName] TO [Username];
+ALTER DATABASE [DatabaseName] OWNER TO [Username];
+\connect [DatabaseName];
+CREATE SCHEMA [SchemaName] AUTHORIZATION [Username];
+
+/etc/postgresql/15/main/postgresql.conf
+
+listen_addresses = '*'
+
+/etc/postgresql/15/main/pg_hba.conf
+
+# IPv4 local connections:
+host    all             all             0.0.0.0/0            scram-sha-256
+
+
+systemctl restart postgresql
+
+
 ### Установка PHP 8.2
 
 ```
@@ -104,8 +132,8 @@ systemctl restart php8.2-fpm
 sudo chown -R hoster:hoster /home/hoster/www
 
 
-cd ~
-curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+cd ~ && \
+curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
 sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 
@@ -135,3 +163,13 @@ FLUSH PRIVILEGES;
 
 cp config.sample.inc.php config.inc.php
 https://www.motorsportdiesel.com/tools/blowfish-salt/pma/
+
+
+### Fish shell
+
+sudo apt-add-repository ppa:fish-shell/release-3 && \
+sudo apt update && \
+sudo apt install fish -y
+
+echo /usr/bin/fish | sudo tee -a /etc/shells
+chsh -s /usr/bin/fish
