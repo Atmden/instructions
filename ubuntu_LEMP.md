@@ -52,13 +52,23 @@ sudo apt install -y nginx certbot unzip mc
 ```
 sudo apt install -y mysql-server
 ```
-
+### Настройка Mysql
 ```
 sudo mysql_secure_installation
-```
-```
+
 sudo mysql -u root -p
 ```
+```mysql
+UNINSTALL COMPONENT "file://component_validate_password";
+
+CREATE USER 'hoster'@'localhost' IDENTIFIED BY 'Pa$$w0rd';
+
+GRANT ALL ON *.* TO 'hoster'@'localhost';
+
+FLUSH PRIVILEGES;
+
+```
+
 
 ### Установка PostgreSQL
 ```
@@ -138,33 +148,23 @@ curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
 sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
 
-nano .env
 
 
 
+### phpMyAdmin
+
+phpMyAdmin устанавливаем когда уже развернули сайт, т.к. размещать его будем в директории сайта
+
+```
 wget https://files.phpmyadmin.net/phpMyAdmin/5.2.1/phpMyAdmin-5.2.1-all-languages.zip
 unzip phpMyAdmin-5.2.1-all-languages.zip
-sudo mv phpMyAdmin-5.2.1-all-languages /usr/share/phpmyadmin
+sudo mv phpMyAdmin-5.2.1-all-languages /home/новый_юзер/www/папка_с_сайтом/public/phpmyadmin
 rm phpMyAdmin-5.2.1-all-languages.zip
-
-
-Настройка Mysql
-
-mysql -u root -p
-
-UNINSTALL COMPONENT "file://component_validate_password";
-
-CREATE USER 'hoster'@'localhost' IDENTIFIED BY 'Pa$$w0rd';
-
-GRANT ALL ON *.* TO 'hoster'@'localhost';
-
-FLUSH PRIVILEGES;
-
-
-
+cd /home/новый_юзер/www/папка_с_сайтом/public/phpmyadmin
 cp config.sample.inc.php config.inc.php
 https://www.motorsportdiesel.com/tools/blowfish-salt/pma/
 
+```
 
 ### Fish shell
 
