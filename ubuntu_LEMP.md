@@ -61,6 +61,7 @@ sudo mysql -u root -p
 ```
 
 ### Установка PostgreSQL
+```
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
 apt update
@@ -86,7 +87,7 @@ host    all             all             0.0.0.0/0            scram-sha-256
 
 
 systemctl restart postgresql
-
+```
 
 ### Установка PHP 8.2
 
